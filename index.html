@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free GeoGuesser - Play Without Paying!</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header>
+            <h1>Free GeoGuesser</h1>
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-label">Round:</span>
+                    <span id="round">1</span>/5
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Score:</span>
+                    <span id="score">0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Game Container -->
+        <div id="game-container">
+            <!-- Street View Panorama -->
+            <div id="panorama"></div>
+
+            <!-- Guess Map Overlay -->
+            <div id="map-overlay" class="hidden">
+                <div id="guess-map"></div>
+                <div class="map-controls">
+                    <button id="confirm-guess" class="btn btn-primary" disabled>Confirm Guess</button>
+                    <button id="cancel-guess" class="btn btn-secondary">Cancel</button>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div id="controls">
+                <button id="make-guess-btn" class="btn btn-primary">Make Your Guess</button>
+            </div>
+        </div>
+
+        <!-- Result Modal -->
+        <div id="result-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Round Result</h2>
+                <div id="result-details">
+                    <p class="result-distance">Distance: <span id="distance">0</span> km</p>
+                    <p class="result-points">Points: <span id="points-earned">0</span></p>
+                </div>
+                <div id="result-map"></div>
+                <button id="next-round-btn" class="btn btn-primary">Next Round</button>
+            </div>
+        </div>
+
+        <!-- Game Over Modal -->
+        <div id="game-over-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Game Over!</h2>
+                <div class="final-score">
+                    <p>Total Score</p>
+                    <h1 id="final-score">0</h1>
+                </div>
+                <div id="round-summary"></div>
+                <button id="play-again-btn" class="btn btn-primary">Play Again</button>
+            </div>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="modal">
+            <div class="modal-content">
+                <h1>Welcome to Free GeoGuesser!</h1>
+                <p>Explore the world without paying a cent!</p>
+                <div class="instructions">
+                    <h3>How to Play:</h3>
+                    <ul>
+                        <li>Explore the Street View location</li>
+                        <li>Click "Make Your Guess" when ready</li>
+                        <li>Click on the map where you think you are</li>
+                        <li>Earn points based on accuracy!</li>
+                    </ul>
+                </div>
+                <button id="start-game-btn" class="btn btn-primary btn-large">Start Game</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE&callback=initGame">
+    </script>
+</body>
+</html>
