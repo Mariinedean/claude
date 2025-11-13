@@ -3,94 +3,276 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free GeoGuesser - Play Without Paying!</title>
+    <title>QUANTUM_TERMINAL // PORTFOLIO</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="app">
+    <!-- Matrix Rain Background -->
+    <canvas id="matrix-bg"></canvas>
+
+    <!-- Main Container -->
+    <div id="main-container">
+        <!-- CRT Scanlines Overlay -->
+        <div class="crt-overlay"></div>
+
         <!-- Header -->
-        <header>
-            <h1>Free GeoGuesser</h1>
-            <div class="stats">
-                <div class="stat">
-                    <span class="stat-label">Round:</span>
-                    <span id="round">1</span>/5
+        <header class="retro-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <span class="terminal-prompt">root@quantum:~$</span>
+                    <span class="blink">_</span>
                 </div>
-                <div class="stat">
-                    <span class="stat-label">Score:</span>
-                    <span id="score">0</span>
-                </div>
+                <nav class="retro-nav">
+                    <button class="nav-btn" data-section="home">HOME</button>
+                    <button class="nav-btn" data-section="papers">PAPERS</button>
+                    <button class="nav-btn" data-section="repos">CODE</button>
+                    <button class="nav-btn" data-section="linalg">LINALG</button>
+                    <button class="nav-btn" data-section="terminal">TERMINAL</button>
+                </nav>
             </div>
         </header>
 
-        <!-- Game Container -->
-        <div id="game-container">
-            <!-- Street View Panorama -->
-            <div id="panorama"></div>
-
-            <!-- Guess Map Overlay -->
-            <div id="map-overlay" class="hidden">
-                <div id="guess-map"></div>
-                <div class="map-controls">
-                    <button id="confirm-guess" class="btn btn-primary" disabled>Confirm Guess</button>
-                    <button id="cancel-guess" class="btn btn-secondary">Cancel</button>
+        <!-- Content Sections -->
+        <main id="content-area">
+            <!-- Home Section -->
+            <section id="home" class="content-section active">
+                <div class="window-container">
+                    <div class="window-header">
+                        <span class="window-title">// WELCOME.exe</span>
+                        <div class="window-controls">
+                            <span class="win-btn">_</span>
+                            <span class="win-btn">□</span>
+                            <span class="win-btn">X</span>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div class="ascii-art">
+<pre>
+  ██████  ██    ██  █████  ███    ██ ████████
+ ██    ██ ██    ██ ██   ██ ████   ██    ██
+ ██    ██ ██    ██ ███████ ██ ██  ██    ██
+ ██ ▄▄ ██ ██    ██ ██   ██ ██  ██ ██    ██
+  ██████   ██████  ██   ██ ██   ████    ██
+     ▀▀
+</pre>
+                        </div>
+                        <div class="intro-text">
+                            <p class="glitch" data-text="QUANTITATIVE RESEARCHER // DEVELOPER">QUANTITATIVE RESEARCHER // DEVELOPER</p>
+                            <p class="mono-text">
+                                &gt; Sophistication in chaos. Building the future of finance through mathematics.<br>
+                                &gt; Papers. Code. Calculations. All in one terminal.<br>
+                                &gt; Type 'help' in the terminal for hidden commands...
+                            </p>
+                        </div>
+                        <div class="status-bar">
+                            <span>[SYSTEM ONLINE]</span>
+                            <span class="pulse">●</span>
+                            <span id="system-time"></span>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- Controls -->
-            <div id="controls">
-                <button id="make-guess-btn" class="btn btn-primary">Make Your Guess</button>
-            </div>
-        </div>
-
-        <!-- Result Modal -->
-        <div id="result-modal" class="modal hidden">
-            <div class="modal-content">
-                <h2>Round Result</h2>
-                <div id="result-details">
-                    <p class="result-distance">Distance: <span id="distance">0</span> km</p>
-                    <p class="result-points">Points: <span id="points-earned">0</span></p>
+            <!-- Papers Section -->
+            <section id="papers" class="content-section">
+                <div class="window-container">
+                    <div class="window-header">
+                        <span class="window-title">// RESEARCH_PAPERS.pdf</span>
+                        <div class="window-controls">
+                            <span class="win-btn">_</span>
+                            <span class="win-btn">□</span>
+                            <span class="win-btn">X</span>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div class="papers-list" id="papers-list">
+                            <div class="paper-item">
+                                <div class="paper-icon">📄</div>
+                                <div class="paper-info">
+                                    <h3>Stochastic Processes in High-Frequency Trading</h3>
+                                    <p class="paper-meta">2024 | Quantitative Finance</p>
+                                    <p class="paper-desc">Analysis of mean-reversion strategies using Ornstein-Uhlenbeck processes</p>
+                                    <a href="#" class="paper-link">[VIEW PAPER]</a>
+                                </div>
+                            </div>
+                            <div class="paper-item">
+                                <div class="paper-icon">📄</div>
+                                <div class="paper-info">
+                                    <h3>Machine Learning for Portfolio Optimization</h3>
+                                    <p class="paper-meta">2024 | Working Paper</p>
+                                    <p class="paper-desc">Deep reinforcement learning approaches to dynamic asset allocation</p>
+                                    <a href="#" class="paper-link">[VIEW PAPER]</a>
+                                </div>
+                            </div>
+                            <p class="add-more-hint">&gt; Add your papers in the HTML or through the file system...</p>
+                        </div>
+                    </div>
                 </div>
-                <div id="result-map"></div>
-                <button id="next-round-btn" class="btn btn-primary">Next Round</button>
-            </div>
-        </div>
+            </section>
 
-        <!-- Game Over Modal -->
-        <div id="game-over-modal" class="modal hidden">
-            <div class="modal-content">
-                <h2>Game Over!</h2>
-                <div class="final-score">
-                    <p>Total Score</p>
-                    <h1 id="final-score">0</h1>
+            <!-- Code Repos Section -->
+            <section id="repos" class="content-section">
+                <div class="window-container">
+                    <div class="window-header">
+                        <span class="window-title">// CODE_REPOSITORIES.git</span>
+                        <div class="window-controls">
+                            <span class="win-btn">_</span>
+                            <span class="win-btn">□</span>
+                            <span class="win-btn">X</span>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div class="repos-list" id="repos-list">
+                            <div class="repo-item">
+                                <div class="repo-header">
+                                    <span class="repo-icon">📦</span>
+                                    <h3>quantitative-strategies</h3>
+                                    <span class="repo-lang">Python</span>
+                                </div>
+                                <p class="repo-desc">Collection of algorithmic trading strategies and backtesting frameworks</p>
+                                <div class="repo-stats">
+                                    <span>⭐ 42</span>
+                                    <span>🔀 8</span>
+                                    <a href="#" class="repo-link">[GITHUB]</a>
+                                </div>
+                            </div>
+                            <div class="repo-item">
+                                <div class="repo-header">
+                                    <span class="repo-icon">📦</span>
+                                    <h3>matrix-calculus-tools</h3>
+                                    <span class="repo-lang">C++</span>
+                                </div>
+                                <p class="repo-desc">High-performance linear algebra library for financial modeling</p>
+                                <div class="repo-stats">
+                                    <span>⭐ 27</span>
+                                    <span>🔀 3</span>
+                                    <a href="#" class="repo-link">[GITHUB]</a>
+                                </div>
+                            </div>
+                            <p class="add-more-hint">&gt; Add your repositories in the HTML or through the file system...</p>
+                        </div>
+                    </div>
                 </div>
-                <div id="round-summary"></div>
-                <button id="play-again-btn" class="btn btn-primary">Play Again</button>
-            </div>
-        </div>
+            </section>
 
-        <!-- Start Screen -->
-        <div id="start-screen" class="modal">
-            <div class="modal-content">
-                <h1>Welcome to Free GeoGuesser!</h1>
-                <p>Explore the world without paying a cent!</p>
-                <div class="instructions">
-                    <h3>How to Play:</h3>
-                    <ul>
-                        <li>Explore the Street View location</li>
-                        <li>Click "Make Your Guess" when ready</li>
-                        <li>Click on the map where you think you are</li>
-                        <li>Earn points based on accuracy!</li>
-                    </ul>
+            <!-- Linear Algebra Calculator -->
+            <section id="linalg" class="content-section">
+                <div class="window-container">
+                    <div class="window-header">
+                        <span class="window-title">// LINEAR_ALGEBRA.calc</span>
+                        <div class="window-controls">
+                            <span class="win-btn">_</span>
+                            <span class="win-btn">□</span>
+                            <span class="win-btn">X</span>
+                        </div>
+                    </div>
+                    <div class="window-content">
+                        <div class="calc-controls">
+                            <button class="calc-btn active" data-calc="matrix">Matrix Operations</button>
+                            <button class="calc-btn" data-calc="vector">Vector Operations</button>
+                            <button class="calc-btn" data-calc="eigen">Eigenvalues</button>
+                        </div>
+
+                        <div id="matrix-calc" class="calc-section active">
+                            <h3>Matrix Calculator</h3>
+                            <div class="matrix-input-section">
+                                <div class="matrix-input-group">
+                                    <label>Matrix A (comma-separated rows, semicolon between rows):</label>
+                                    <textarea id="matrix-a" placeholder="1,2,3;4,5,6;7,8,9" rows="3"></textarea>
+                                </div>
+                                <div class="matrix-input-group">
+                                    <label>Matrix B (for operations requiring two matrices):</label>
+                                    <textarea id="matrix-b" placeholder="1,0,0;0,1,0;0,0,1" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="calc-operations">
+                                <button class="op-btn" onclick="matrixOperation('add')">A + B</button>
+                                <button class="op-btn" onclick="matrixOperation('subtract')">A - B</button>
+                                <button class="op-btn" onclick="matrixOperation('multiply')">A × B</button>
+                                <button class="op-btn" onclick="matrixOperation('transpose')">A<sup>T</sup></button>
+                                <button class="op-btn" onclick="matrixOperation('determinant')">det(A)</button>
+                                <button class="op-btn" onclick="matrixOperation('inverse')">A<sup>-1</sup></button>
+                            </div>
+                            <div class="calc-output">
+                                <label>Result:</label>
+                                <pre id="matrix-result" class="result-display">Results will appear here...</pre>
+                            </div>
+                        </div>
+
+                        <div id="vector-calc" class="calc-section">
+                            <h3>Vector Calculator</h3>
+                            <div class="matrix-input-section">
+                                <div class="matrix-input-group">
+                                    <label>Vector A (comma-separated):</label>
+                                    <input type="text" id="vector-a" placeholder="1,2,3,4" />
+                                </div>
+                                <div class="matrix-input-group">
+                                    <label>Vector B:</label>
+                                    <input type="text" id="vector-b" placeholder="5,6,7,8" />
+                                </div>
+                            </div>
+                            <div class="calc-operations">
+                                <button class="op-btn" onclick="vectorOperation('add')">A + B</button>
+                                <button class="op-btn" onclick="vectorOperation('subtract')">A - B</button>
+                                <button class="op-btn" onclick="vectorOperation('dot')">A · B</button>
+                                <button class="op-btn" onclick="vectorOperation('cross')">A × B (3D only)</button>
+                                <button class="op-btn" onclick="vectorOperation('magnitude')">|A|</button>
+                                <button class="op-btn" onclick="vectorOperation('normalize')">Â</button>
+                            </div>
+                            <div class="calc-output">
+                                <label>Result:</label>
+                                <pre id="vector-result" class="result-display">Results will appear here...</pre>
+                            </div>
+                        </div>
+
+                        <div id="eigen-calc" class="calc-section">
+                            <h3>Eigenvalue Calculator</h3>
+                            <div class="matrix-input-section">
+                                <div class="matrix-input-group">
+                                    <label>Matrix (must be square):</label>
+                                    <textarea id="eigen-matrix" placeholder="4,-2;1,1" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="calc-operations">
+                                <button class="op-btn" onclick="eigenOperation()">Calculate Eigenvalues</button>
+                            </div>
+                            <div class="calc-output">
+                                <label>Result:</label>
+                                <pre id="eigen-result" class="result-display">Results will appear here...</pre>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <button id="start-game-btn" class="btn btn-primary btn-large">Start Game</button>
-            </div>
-        </div>
+            </section>
+
+            <!-- Terminal Section -->
+            <section id="terminal" class="content-section">
+                <div class="window-container terminal-window">
+                    <div class="window-header">
+                        <span class="window-title">// SYSTEM_TERMINAL.sh</span>
+                        <div class="window-controls">
+                            <span class="win-btn">_</span>
+                            <span class="win-btn">□</span>
+                            <span class="win-btn">X</span>
+                        </div>
+                    </div>
+                    <div class="terminal-content">
+                        <div id="terminal-output" class="terminal-output">
+                            <div class="terminal-line">QUANTUM TERMINAL v2.1.0</div>
+                            <div class="terminal-line">Type 'help' for available commands</div>
+                            <div class="terminal-line">Type 'ls -a' to see hidden files...</div>
+                            <div class="terminal-line">&nbsp;</div>
+                        </div>
+                        <div class="terminal-input-line">
+                            <span class="terminal-prompt">root@quantum:~$</span>
+                            <input type="text" id="terminal-input" class="terminal-input" autofocus autocomplete="off" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
 
-    <script src="game.js"></script>
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE&callback=initGame">
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
