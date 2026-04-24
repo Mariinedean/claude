@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoGuesser Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        #log {
+            background: #2c2c2c;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .success { color: #4CAF50; }
+        .error { color: #ff5555; }
+        .info { color: #5599ff; }
+    </style>
+</head>
+<body>
+    <h1>GeoGuesser Diagnostic Page</h1>
+    <div id="log"></div>
+
+    <script>
+        const log = document.getElementById('log');
+
+        function addLog(msg, type = 'info') {
+            const line = document.createElement('div');
+            line.className = type;
+            line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            log.appendChild(line);
+            console.log(msg);
+        }
+
+        addLog('Starting diagnostic...', 'info');
+
+        // Test 1: Check if basic JavaScript works
+        addLog('✓ JavaScript is working', 'success');
+
+        // Test 2: Check if Leaflet CSS loads
+        const leafletCSS = document.createElement('link');
+        leafletCSS.rel = 'stylesheet';
+        leafletCSS.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        leafletCSS.onload = () => addLog('✓ Leaflet CSS loaded', 'success');
+        leafletCSS.onerror = () => addLog('✗ Leaflet CSS failed to load', 'error');
+        document.head.appendChild(leafletCSS);
+
+        // Test 3: Check if Leaflet JS loads
+        const leafletJS = document.createElement('script');
+        leafletJS.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+        leafletJS.onload = () => {
+            addLog('✓ Leaflet JS loaded', 'success');
+            addLog('✓ Leaflet version: ' + L.version, 'success');
+
+            // Test 4: Try to create a map
+            setTimeout(() => {
+                const mapDiv = document.createElement('div');
+                mapDiv.id = 'testmap';
+                mapDiv.style.width = '400px';
+                mapDiv.style.height = '300px';
+                mapDiv.style.marginTop = '20px';
+                document.body.appendChild(mapDiv);
+
+                try {
+                    const map = L.map('testmap').setView([51.505, -0.09], 13);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+                    addLog('✓ Test map created successfully!', 'success');
+                    addLog('', 'info');
+                    addLog('=== ALL TESTS PASSED ===', 'success');
+                    addLog('The game should work. Try: http://localhost:3002/index.html', 'info');
+                } catch (e) {
+                    addLog('✗ Failed to create map: ' + e.message, 'error');
+                }
+            }, 1000);
+        };
+        leafletJS.onerror = () => addLog('✗ Leaflet JS failed to load', 'error');
+        document.head.appendChild(leafletJS);
+
+        // Test 5: Check game files
+        fetch('/game.js')
+            .then(r => r.ok ? addLog('✓ game.js accessible', 'success') : addLog('✗ game.js not found', 'error'))
+            .catch(e => addLog('✗ game.js error: ' + e.message, 'error'));
+
+        fetch('/styles.css')
+            .then(r => r.ok ? addLog('✓ styles.css accessible', 'success') : addLog('✗ styles.css not found', 'error'))
+            .catch(e => addLog('✗ styles.css error: ' + e.message, 'error'));
+    </script>
+</body>
+</html>
