@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free GeoGuesser - Standalone</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; background-color: #1a1a1a; color: #ffffff; }
+        #app { width: 100vw; height: 100vh; display: flex; flex-direction: column; }
+        header { background-color: #2c2c2c; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); z-index: 100; }
+        header h1 { font-size: 24px; color: #4CAF50; }
+        .stats { display: flex; gap: 30px; }
+        .stat { display: flex; gap: 8px; font-size: 18px; }
+        .stat-label { color: #888; }
+        #game-container { flex: 1; position: relative; overflow: hidden; }
+        #explore-view { width: 100%; height: 100%; }
+        .hint-box { position: absolute; top: 20px; left: 20px; background-color: rgba(44, 44, 44, 0.95); padding: 15px 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); z-index: 10; max-width: 400px; }
+        .hint-box strong { color: #4CAF50; }
+        #controls { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 10; }
+        #map-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.9); z-index: 50; display: flex; flex-direction: column; padding: 20px; }
+        #guess-map { flex: 1; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); }
+        .map-controls { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
+        .btn { padding: 12px 30px; font-size: 16px; font-weight: 600; border: none; border-radius: 25px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); }
+        .btn-primary { background: linear-gradient(135deg, #4CAF50, #45a049); color: white; }
+        .btn-primary:hover { background: linear-gradient(135deg, #45a049, #3d8b40); }
+        .btn-primary:disabled { background: #666; cursor: not-allowed; transform: none; }
+        .btn-secondary { background: linear-gradient(135deg, #666, #555); color: white; }
+        .btn-large { padding: 18px 50px; font-size: 20px; }
+        .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.95); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background-color: #2c2c2c; padding: 40px; border-radius: 15px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5); text-align: center; }
+        .modal-content h2 { color: #4CAF50; margin-bottom: 20px; font-size: 32px; }
+        .modal-content p { font-size: 18px; color: #ccc; margin-bottom: 20px; }
+        .subtitle { color: #4CAF50 !important; font-weight: bold; font-size: 16px !important; }
+        .instructions { text-align: left; margin: 30px 0; padding: 20px; background-color: #1a1a1a; border-radius: 10px; }
+        .instructions h3 { color: #4CAF50; margin-bottom: 15px; }
+        .instructions ul { list-style-position: inside; color: #ccc; line-height: 2; }
+        #result-details { margin: 20px 0; }
+        .result-distance, .result-points { font-size: 20px; margin: 10px 0; }
+        .result-distance span, .result-points span { color: #4CAF50; font-weight: bold; font-size: 24px; }
+        #result-map { width: 100%; height: 300px; border-radius: 10px; margin: 20px 0; }
+        .final-score { margin: 30px 0; }
+        .final-score p { font-size: 18px; color: #888; margin-bottom: 10px; }
+        .final-score h1 { font-size: 64px; color: #4CAF50; text-shadow: 0 0 20px rgba(76, 175, 80, 0.5); }
+        #round-summary { text-align: left; margin: 30px 0; padding: 20px; background-color: #1a1a1a; border-radius: 10px; }
+        .round-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #333; }
+        .round-item:last-child { border-bottom: none; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>Free GeoGuesser</h1>
+            <div class="stats">
+                <div class="stat"><span class="stat-label">Round:</span> <span id="round">1</span>/5</div>
+                <div class="stat"><span class="stat-label">Score:</span> <span id="score">0</span></div>
+            </div>
+        </header>
+        <div id="game-container">
+            <div id="explore-view"></div>
+            <div id="location-hint" class="hint-box"><strong>Hint:</strong> <span id="hint-text">Explore the map to find clues!</span></div>
+            <div id="map-overlay" class="hidden">
+                <div id="guess-map"></div>
+                <div class="map-controls">
+                    <button id="confirm-guess" class="btn btn-primary" disabled>Confirm Guess</button>
+                    <button id="cancel-guess" class="btn btn-secondary">Cancel</button>
+                </div>
+            </div>
+            <div id="controls"><button id="make-guess-btn" class="btn btn-primary">Make Your Guess</button></div>
+        </div>
+        <div id="result-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Round Result</h2>
+                <div id="result-details">
+                    <p class="result-distance">Distance: <span id="distance">0</span> km</p>
+                    <p class="result-points">Points: <span id="points-earned">0</span></p>
+                </div>
+                <div id="result-map"></div>
+                <button id="next-round-btn" class="btn btn-primary">Next Round</button>
+            </div>
+        </div>
+        <div id="game-over-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Game Over!</h2>
+                <div class="final-score"><p>Total Score</p><h1 id="final-score">0</h1></div>
+                <div id="round-summary"></div>
+                <button id="play-again-btn" class="btn btn-primary">Play Again</button>
+            </div>
+        </div>
+        <div id="start-screen" class="modal">
+            <div class="modal-content">
+                <h1>Welcome to Free GeoGuesser!</h1>
+                <p>Explore the world without paying a cent!</p>
+                <p class="subtitle">100% Free - No API Keys - No Sign Up!</p>
+                <div class="instructions">
+                    <h3>How to Play:</h3>
+                    <ul>
+                        <li>Explore the satellite map view of a random location</li>
+                        <li>Look for landmarks, geography, and city features</li>
+                        <li>Click "Make Your Guess" when ready</li>
+                        <li>Click on the world map where you think you are</li>
+                        <li>Earn points based on accuracy!</li>
+                    </ul>
+                </div>
+                <button id="start-game-btn" class="btn btn-primary btn-large">Start Game</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+let gameState={round:1,maxRounds:5,score:0,currentLocation:null,guessLocation:null,roundResults:[]};const randomLocations=[{lat:48.8566,lng:2.3522,hint:"Look for the famous river and urban layout"},{lat:51.5074,lng:-.1278,hint:"Notice the Thames River and historic architecture"},{lat:41.9028,lng:12.4964,hint:"Ancient city with the famous river flowing through"},{lat:52.52,lng:13.405,hint:"Large European capital with many parks"},{lat:40.4168,lng:-3.7038,hint:"Center of Spain, inland location"},{lat:59.3293,lng:18.0686,hint:"Nordic archipelago city on the Baltic Sea"},{lat:50.0755,lng:14.4378,hint:"Historic Central European city with a river bend"},{lat:47.4979,lng:19.0402,hint:"Danube River divides this capital city"},{lat:40.7128,lng:-74.006,hint:"Manhattan Island, dense urban grid"},{lat:34.0522,lng:-118.2437,hint:"West coast sprawl near mountains"},{lat:41.8781,lng:-87.6298,hint:"Great Lakes city with grid pattern"},{lat:37.7749,lng:-122.4194,hint:"Hilly peninsula city by the bay"},{lat:43.6532,lng:-79.3832,hint:"Canadian city on Lake Ontario"},{lat:49.2827,lng:-123.1207,hint:"Pacific Northwest coastal city"},{lat:19.4326,lng:-99.1332,hint:"High altitude mega-city in a valley"},{lat:-23.5505,lng:-46.6333,hint:"Massive Brazilian metropolis inland"},{lat:-22.9068,lng:-43.1729,hint:"Coastal Brazilian city with distinctive geography"},{lat:-34.6037,lng:-58.3816,hint:"Capital on the Río de la Plata"},{lat:-33.4489,lng:-70.6693,hint:"Chilean capital near the Andes"},{lat:-12.0464,lng:-77.0428,hint:"Coastal desert city in Peru"},{lat:35.6762,lng:139.6503,hint:"Massive urban sprawl on Tokyo Bay"},{lat:37.5665,lng:126.978,hint:"Han River flows through this capital"},{lat:39.9042,lng:116.4074,hint:"Vast Chinese capital in the north"},{lat:31.2304,lng:121.4737,hint:"Major port city on the Yangtze Delta"},{lat:22.3193,lng:114.1694,hint:"Dense island and peninsula city"},{lat:1.3521,lng:103.8198,hint:"Island city-state near the equator"},{lat:13.7563,lng:100.5018,hint:"River delta capital in Southeast Asia"},{lat:28.6139,lng:77.209,hint:"Large inland capital in South Asia"},{lat:19.076,lng:72.8777,hint:"Coastal megacity on a peninsula"},{lat:25.2048,lng:55.2708,hint:"Desert coastal city with artificial islands"},{lat:-33.9249,lng:18.4241,hint:"Southwestern tip of Africa near Table Mountain"},{lat:-26.2041,lng:28.0473,hint:"Large South African inland city"},{lat:30.0444,lng:31.2357,hint:"Nile River delta mega-city"},{lat:-1.2921,lng:36.8219,hint:"East African capital city"},{lat:33.5731,lng:-7.5898,hint:"Major Moroccan coastal city"},{lat:-33.8688,lng:151.2093,hint:"Iconic harbor city in Australia"},{lat:-37.8136,lng:144.9631,hint:"Southern Australian coastal capital"},{lat:-41.2865,lng:174.7762,hint:"Capital city on a harbor in New Zealand"},{lat:-36.8485,lng:174.7633,hint:"Largest New Zealand city on isthmus"}];let exploreMap,guessMap,resultMap,guessMarker;document.addEventListener("DOMContentLoaded",function(){console.log("Game initialized - No API key required!");setupEventListeners()});function setupEventListeners(){document.getElementById("start-game-btn").addEventListener("click",startGame);document.getElementById("make-guess-btn").addEventListener("click",showGuessMap);document.getElementById("confirm-guess").addEventListener("click",submitGuess);document.getElementById("cancel-guess").addEventListener("click",hideGuessMap);document.getElementById("next-round-btn").addEventListener("click",nextRound);document.getElementById("play-again-btn").addEventListener("click",resetGame)}function startGame(){document.getElementById("start-screen").classList.add("hidden");resetGameState();loadRound()}function resetGameState(){gameState={round:1,maxRounds:5,score:0,currentLocation:null,guessLocation:null,roundResults:[]};updateUI()}function resetGame(){document.getElementById("game-over-modal").classList.add("hidden");document.getElementById("start-screen").classList.remove("hidden")}function loadRound(){const randomIndex=Math.floor(Math.random()*randomLocations.length);const location=randomLocations[randomIndex];gameState.currentLocation={lat:location.lat,lng:location.lng,hint:location.hint};const latOffset=(Math.random()-.5)*.02;const lngOffset=(Math.random()-.5)*.02;gameState.currentLocation.lat+=latOffset;gameState.currentLocation.lng+=lngOffset;gameState.guessLocation=null;document.getElementById("hint-text").textContent=gameState.currentLocation.hint;if(!exploreMap){exploreMap=L.map("explore-view",{center:[gameState.currentLocation.lat,gameState.currentLocation.lng],zoom:15,zoomControl:!0,attributionControl:!0});L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{attribution:"Tiles &copy; Esri",maxZoom:18}).addTo(exploreMap)}else{exploreMap.setView([gameState.currentLocation.lat,gameState.currentLocation.lng],15)}updateUI()}function showGuessMap(){document.getElementById("map-overlay").classList.remove("hidden");if(!guessMap){guessMap=L.map("guess-map",{center:[20,0],zoom:2,worldCopyJump:!0});L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',maxZoom:18}).addTo(guessMap);guessMap.on("click",function(e){placeGuessMarker(e.latlng)})}else{guessMap.setView([20,0],2)}}function hideGuessMap(){document.getElementById("map-overlay").classList.add("hidden")}function placeGuessMarker(latlng){if(guessMarker){guessMap.removeLayer(guessMarker)}guessMarker=L.marker(latlng,{icon:L.icon({iconUrl:"https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",shadowUrl:"https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",iconSize:[25,41],iconAnchor:[12,41],popupAnchor:[1,-34],shadowSize:[41,41]})}).addTo(guessMap);gameState.guessLocation={lat:latlng.lat,lng:latlng.lng};document.getElementById("confirm-guess").disabled=!1}function submitGuess(){if(!gameState.guessLocation)return;hideGuessMap();const distance=calculateDistance(gameState.currentLocation.lat,gameState.currentLocation.lng,gameState.guessLocation.lat,gameState.guessLocation.lng);const points=calculatePoints(distance);gameState.score+=points;gameState.roundResults.push({round:gameState.round,distance:distance,points:points,actual:gameState.currentLocation,guess:gameState.guessLocation});showResult(distance,points)}function calculateDistance(lat1,lon1,lat2,lon2){const R=6371;const dLat=deg2rad(lat2-lat1);const dLon=deg2rad(lon2-lon1);const a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(deg2rad(lat1))*Math.cos(deg2rad(lat2))*Math.sin(dLon/2)*Math.sin(dLon/2);const c=2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));const distance=R*c;return Math.round(distance)}function deg2rad(deg){return deg*(Math.PI/180)}function calculatePoints(distance){if(distance<10)return 5e3;if(distance<50)return 4e3;if(distance<100)return 3e3;if(distance<500)return 2e3;if(distance<1e3)return 1e3;return 500}function showResult(distance,points){document.getElementById("distance").textContent=distance.toLocaleString();document.getElementById("points-earned").textContent=points.toLocaleString();const resultMapDiv=document.getElementById("result-map");resultMapDiv.innerHTML="";resultMap=L.map("result-map",{center:[gameState.currentLocation.lat,gameState.currentLocation.lng],zoom:4});L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"&copy; OpenStreetMap contributors",maxZoom:18}).addTo(resultMap);const actualMarker=L.marker([gameState.currentLocation.lat,gameState.currentLocation.lng],{icon:L.icon({iconUrl:"https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",shadowUrl:"https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",iconSize:[25,41],iconAnchor:[12,41],popupAnchor:[1,-34],shadowSize:[41,41]})}).addTo(resultMap).bindPopup("Actual Location");const guessedMarker=L.marker([gameState.guessLocation.lat,gameState.guessLocation.lng],{icon:L.icon({iconUrl:"https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",shadowUrl:"https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",iconSize:[25,41],iconAnchor:[12,41],popupAnchor:[1,-34],shadowSize:[41,41]})}).addTo(resultMap).bindPopup("Your Guess");const line=L.polyline([[gameState.currentLocation.lat,gameState.currentLocation.lng],[gameState.guessLocation.lat,gameState.guessLocation.lng]],{color:"red",weight:2,opacity:.7}).addTo(resultMap);const bounds=L.latLngBounds([gameState.currentLocation.lat,gameState.currentLocation.lng],[gameState.guessLocation.lat,gameState.guessLocation.lng]);resultMap.fitBounds(bounds,{padding:[50,50]});updateUI();document.getElementById("result-modal").classList.remove("hidden")}function nextRound(){document.getElementById("result-modal").classList.add("hidden");if(gameState.round>=gameState.maxRounds){showGameOver()}else{gameState.round++;loadRound()}}function showGameOver(){document.getElementById("final-score").textContent=gameState.score.toLocaleString();const summaryDiv=document.getElementById("round-summary");summaryDiv.innerHTML="<h3>Round Summary</h3>";gameState.roundResults.forEach(result=>{const roundDiv=document.createElement("div");roundDiv.className="round-item";roundDiv.innerHTML=`<span>Round ${result.round}</span><span>${result.distance.toLocaleString()} km - ${result.points.toLocaleString()} pts</span>`;summaryDiv.appendChild(roundDiv)});document.getElementById("game-over-modal").classList.remove("hidden")}function updateUI(){document.getElementById("round").textContent=gameState.round;document.getElementById("score").textContent=gameState.score.toLocaleString()}
+    </script>
+</body>
+</html>
