@@ -56,9 +56,30 @@ header h1 {
     overflow: hidden;
 }
 
-#panorama {
+#explore-view {
     width: 100%;
     height: 100%;
+}
+
+/* Location Hint */
+.hint-box {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: rgba(44, 44, 44, 0.95);
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    max-width: 400px;
+}
+
+.hint-box strong {
+    color: #4CAF50;
+}
+
+#hint-text {
+    color: #fff;
 }
 
 /* Controls */
@@ -191,6 +212,12 @@ header h1 {
 }
 
 /* Start Screen */
+.subtitle {
+    color: #4CAF50 !important;
+    font-weight: bold;
+    font-size: 16px !important;
+}
+
 .instructions {
     text-align: left;
     margin: 30px 0;

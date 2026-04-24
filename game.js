@@ -8,73 +8,71 @@ let gameState = {
     roundResults: []
 };
 
-// Random Locations Around the World
+// Random Locations Around the World with hints
 const randomLocations = [
     // Europe
-    { lat: 48.8566, lng: 2.3522 },      // Paris, France
-    { lat: 51.5074, lng: -0.1278 },     // London, UK
-    { lat: 41.9028, lng: 12.4964 },     // Rome, Italy
-    { lat: 52.5200, lng: 13.4050 },     // Berlin, Germany
-    { lat: 40.4168, lng: -3.7038 },     // Madrid, Spain
-    { lat: 59.3293, lng: 18.0686 },     // Stockholm, Sweden
-    { lat: 50.0755, lng: 14.4378 },     // Prague, Czech Republic
-    { lat: 47.4979, lng: 19.0402 },     // Budapest, Hungary
+    { lat: 48.8566, lng: 2.3522, hint: "Look for the famous river and urban layout" },      // Paris
+    { lat: 51.5074, lng: -0.1278, hint: "Notice the Thames River and historic architecture" },     // London
+    { lat: 41.9028, lng: 12.4964, hint: "Ancient city with the famous river flowing through" },     // Rome
+    { lat: 52.5200, lng: 13.4050, hint: "Large European capital with many parks" },     // Berlin
+    { lat: 40.4168, lng: -3.7038, hint: "Center of Spain, inland location" },     // Madrid
+    { lat: 59.3293, lng: 18.0686, hint: "Nordic archipelago city on the Baltic Sea" },     // Stockholm
+    { lat: 50.0755, lng: 14.4378, hint: "Historic Central European city with a river bend" },     // Prague
+    { lat: 47.4979, lng: 19.0402, hint: "Danube River divides this capital city" },     // Budapest
 
     // North America
-    { lat: 40.7128, lng: -74.0060 },    // New York, USA
-    { lat: 34.0522, lng: -118.2437 },   // Los Angeles, USA
-    { lat: 41.8781, lng: -87.6298 },    // Chicago, USA
-    { lat: 37.7749, lng: -122.4194 },   // San Francisco, USA
-    { lat: 43.6532, lng: -79.3832 },    // Toronto, Canada
-    { lat: 49.2827, lng: -123.1207 },   // Vancouver, Canada
-    { lat: 19.4326, lng: -99.1332 },    // Mexico City, Mexico
+    { lat: 40.7128, lng: -74.0060, hint: "Manhattan Island, dense urban grid" },    // New York
+    { lat: 34.0522, lng: -118.2437, hint: "West coast sprawl near mountains" },   // Los Angeles
+    { lat: 41.8781, lng: -87.6298, hint: "Great Lakes city with grid pattern" },    // Chicago
+    { lat: 37.7749, lng: -122.4194, hint: "Hilly peninsula city by the bay" },   // San Francisco
+    { lat: 43.6532, lng: -79.3832, hint: "Canadian city on Lake Ontario" },    // Toronto
+    { lat: 49.2827, lng: -123.1207, hint: "Pacific Northwest coastal city" },   // Vancouver
+    { lat: 19.4326, lng: -99.1332, hint: "High altitude mega-city in a valley" },    // Mexico City
 
     // South America
-    { lat: -23.5505, lng: -46.6333 },   // São Paulo, Brazil
-    { lat: -22.9068, lng: -43.1729 },   // Rio de Janeiro, Brazil
-    { lat: -34.6037, lng: -58.3816 },   // Buenos Aires, Argentina
-    { lat: -33.4489, lng: -70.6693 },   // Santiago, Chile
-    { lat: -12.0464, lng: -77.0428 },   // Lima, Peru
+    { lat: -23.5505, lng: -46.6333, hint: "Massive Brazilian metropolis inland" },   // São Paulo
+    { lat: -22.9068, lng: -43.1729, hint: "Coastal Brazilian city with distinctive geography" },   // Rio
+    { lat: -34.6037, lng: -58.3816, hint: "Capital on the Río de la Plata" },   // Buenos Aires
+    { lat: -33.4489, lng: -70.6693, hint: "Chilean capital near the Andes" },   // Santiago
+    { lat: -12.0464, lng: -77.0428, hint: "Coastal desert city in Peru" },   // Lima
 
     // Asia
-    { lat: 35.6762, lng: 139.6503 },    // Tokyo, Japan
-    { lat: 37.5665, lng: 126.9780 },    // Seoul, South Korea
-    { lat: 39.9042, lng: 116.4074 },    // Beijing, China
-    { lat: 31.2304, lng: 121.4737 },    // Shanghai, China
-    { lat: 22.3193, lng: 114.1694 },    // Hong Kong
-    { lat: 1.3521, lng: 103.8198 },     // Singapore
-    { lat: 13.7563, lng: 100.5018 },    // Bangkok, Thailand
-    { lat: 28.6139, lng: 77.2090 },     // Delhi, India
-    { lat: 19.0760, lng: 72.8777 },     // Mumbai, India
-    { lat: 25.2048, lng: 55.2708 },     // Dubai, UAE
+    { lat: 35.6762, lng: 139.6503, hint: "Massive urban sprawl on Tokyo Bay" },    // Tokyo
+    { lat: 37.5665, lng: 126.9780, hint: "Han River flows through this capital" },    // Seoul
+    { lat: 39.9042, lng: 116.4074, hint: "Vast Chinese capital in the north" },    // Beijing
+    { lat: 31.2304, lng: 121.4737, hint: "Major port city on the Yangtze Delta" },    // Shanghai
+    { lat: 22.3193, lng: 114.1694, hint: "Dense island and peninsula city" },    // Hong Kong
+    { lat: 1.3521, lng: 103.8198, hint: "Island city-state near the equator" },     // Singapore
+    { lat: 13.7563, lng: 100.5018, hint: "River delta capital in Southeast Asia" },    // Bangkok
+    { lat: 28.6139, lng: 77.2090, hint: "Large inland capital in South Asia" },     // Delhi
+    { lat: 19.0760, lng: 72.8777, hint: "Coastal megacity on a peninsula" },     // Mumbai
+    { lat: 25.2048, lng: 55.2708, hint: "Desert coastal city with artificial islands" },     // Dubai
 
     // Africa
-    { lat: -33.9249, lng: 18.4241 },    // Cape Town, South Africa
-    { lat: -26.2041, lng: 28.0473 },    // Johannesburg, South Africa
-    { lat: 30.0444, lng: 31.2357 },     // Cairo, Egypt
-    { lat: -1.2921, lng: 36.8219 },     // Nairobi, Kenya
-    { lat: 33.5731, lng: -7.5898 },     // Casablanca, Morocco
+    { lat: -33.9249, lng: 18.4241, hint: "Southwestern tip of Africa near Table Mountain" },    // Cape Town
+    { lat: -26.2041, lng: 28.0473, hint: "Large South African inland city" },    // Johannesburg
+    { lat: 30.0444, lng: 31.2357, hint: "Nile River delta mega-city" },     // Cairo
+    { lat: -1.2921, lng: 36.8219, hint: "East African capital city" },     // Nairobi
+    { lat: 33.5731, lng: -7.5898, hint: "Major Moroccan coastal city" },     // Casablanca
 
     // Oceania
-    { lat: -33.8688, lng: 151.2093 },   // Sydney, Australia
-    { lat: -37.8136, lng: 144.9631 },   // Melbourne, Australia
-    { lat: -41.2865, lng: 174.7762 },   // Wellington, New Zealand
-    { lat: -36.8485, lng: 174.7633 },   // Auckland, New Zealand
+    { lat: -33.8688, lng: 151.2093, hint: "Iconic harbor city in Australia" },   // Sydney
+    { lat: -37.8136, lng: 144.9631, hint: "Southern Australian coastal capital" },   // Melbourne
+    { lat: -41.2865, lng: 174.7762, hint: "Capital city on a harbor in New Zealand" },   // Wellington
+    { lat: -36.8485, lng: 174.7633, hint: "Largest New Zealand city on isthmus" },   // Auckland
 ];
 
-// Google Maps objects
-let panorama;
+// Leaflet map objects
+let exploreMap;
 let guessMap;
 let resultMap;
 let guessMarker;
-let actualMarker;
-let guessedMarker;
 
-// Initialize game when Google Maps API is loaded
-function initGame() {
-    console.log('Google Maps API loaded');
+// Initialize game
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Game initialized - No API key required!');
     setupEventListeners();
-}
+});
 
 // Setup event listeners
 function setupEventListeners() {
@@ -116,41 +114,42 @@ function resetGame() {
 function loadRound() {
     // Get random location using randomized integer
     const randomIndex = Math.floor(Math.random() * randomLocations.length);
-    gameState.currentLocation = randomLocations[randomIndex];
+    const location = randomLocations[randomIndex];
 
-    // Add small random offset to make it less predictable (within ~1km)
+    gameState.currentLocation = {
+        lat: location.lat,
+        lng: location.lng,
+        hint: location.hint
+    };
+
+    // Add small random offset to make it less predictable
     const latOffset = (Math.random() - 0.5) * 0.02;
     const lngOffset = (Math.random() - 0.5) * 0.02;
 
-    gameState.currentLocation = {
-        lat: gameState.currentLocation.lat + latOffset,
-        lng: gameState.currentLocation.lng + lngOffset
-    };
+    gameState.currentLocation.lat += latOffset;
+    gameState.currentLocation.lng += lngOffset;
 
     gameState.guessLocation = null;
 
-    // Initialize Street View panorama
-    if (!panorama) {
-        panorama = new google.maps.StreetViewPanorama(
-            document.getElementById('panorama'),
-            {
-                position: gameState.currentLocation,
-                pov: {
-                    heading: Math.random() * 360,  // Random heading
-                    pitch: 0
-                },
-                addressControl: false,
-                showRoadLabels: false,
-                zoomControl: true,
-                fullscreenControl: true
-            }
-        );
-    } else {
-        panorama.setPosition(gameState.currentLocation);
-        panorama.setPov({
-            heading: Math.random() * 360,
-            pitch: 0
+    // Update hint text
+    document.getElementById('hint-text').textContent = gameState.currentLocation.hint;
+
+    // Initialize explore map (satellite view)
+    if (!exploreMap) {
+        exploreMap = L.map('explore-view', {
+            center: [gameState.currentLocation.lat, gameState.currentLocation.lng],
+            zoom: 15,
+            zoomControl: true,
+            attributionControl: true
         });
+
+        // Use satellite imagery (Esri World Imagery)
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri',
+            maxZoom: 18
+        }).addTo(exploreMap);
+    } else {
+        exploreMap.setView([gameState.currentLocation.lat, gameState.currentLocation.lng], 15);
     }
 
     updateUI();
@@ -161,15 +160,25 @@ function showGuessMap() {
     document.getElementById('map-overlay').classList.remove('hidden');
 
     if (!guessMap) {
-        guessMap = new google.maps.Map(document.getElementById('guess-map'), {
-            center: { lat: 20, lng: 0 },
+        guessMap = L.map('guess-map', {
+            center: [20, 0],
             zoom: 2,
-            streetViewControl: false
+            worldCopyJump: true
         });
 
-        guessMap.addListener('click', (e) => {
-            placeGuessMarker(e.latLng);
+        // Use OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 18
+        }).addTo(guessMap);
+
+        // Add click handler
+        guessMap.on('click', function(e) {
+            placeGuessMarker(e.latlng);
         });
+    } else {
+        // Reset view
+        guessMap.setView([20, 0], 2);
     }
 }
 
@@ -179,20 +188,25 @@ function hideGuessMap() {
 }
 
 // Place guess marker
-function placeGuessMarker(location) {
+function placeGuessMarker(latlng) {
     if (guessMarker) {
-        guessMarker.setMap(null);
+        guessMap.removeLayer(guessMarker);
     }
 
-    guessMarker = new google.maps.Marker({
-        position: location,
-        map: guessMap,
-        title: 'Your Guess'
-    });
+    guessMarker = L.marker(latlng, {
+        icon: L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        })
+    }).addTo(guessMap);
 
     gameState.guessLocation = {
-        lat: location.lat(),
-        lng: location.lng()
+        lat: latlng.lat,
+        lng: latlng.lng
     };
 
     document.getElementById('confirm-guess').disabled = false;
@@ -264,52 +278,65 @@ function showResult(distance, points) {
     document.getElementById('points-earned').textContent = points.toLocaleString();
 
     // Show result map with both markers
-    if (!resultMap) {
-        resultMap = new google.maps.Map(document.getElementById('result-map'), {
-            center: gameState.currentLocation,
-            zoom: 4
-        });
-    }
+    const resultMapDiv = document.getElementById('result-map');
+    resultMapDiv.innerHTML = ''; // Clear previous map
 
-    // Clear previous markers
-    if (actualMarker) actualMarker.setMap(null);
-    if (guessedMarker) guessedMarker.setMap(null);
+    resultMap = L.map('result-map', {
+        center: [gameState.currentLocation.lat, gameState.currentLocation.lng],
+        zoom: 4
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 18
+    }).addTo(resultMap);
 
     // Add actual location marker (green)
-    actualMarker = new google.maps.Marker({
-        position: gameState.currentLocation,
-        map: resultMap,
-        title: 'Actual Location',
-        icon: {
-            url: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+    const actualMarker = L.marker(
+        [gameState.currentLocation.lat, gameState.currentLocation.lng],
+        {
+            icon: L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            })
         }
-    });
+    ).addTo(resultMap).bindPopup('Actual Location');
 
     // Add guessed location marker (red)
-    guessedMarker = new google.maps.Marker({
-        position: gameState.guessLocation,
-        map: resultMap,
-        title: 'Your Guess',
-        icon: {
-            url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+    const guessedMarker = L.marker(
+        [gameState.guessLocation.lat, gameState.guessLocation.lng],
+        {
+            icon: L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            })
         }
-    });
+    ).addTo(resultMap).bindPopup('Your Guess');
 
     // Draw line between markers
-    const line = new google.maps.Polyline({
-        path: [gameState.currentLocation, gameState.guessLocation],
-        geodesic: true,
-        strokeColor: '#FF0000',
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        map: resultMap
-    });
+    const line = L.polyline([
+        [gameState.currentLocation.lat, gameState.currentLocation.lng],
+        [gameState.guessLocation.lat, gameState.guessLocation.lng]
+    ], {
+        color: 'red',
+        weight: 2,
+        opacity: 0.7
+    }).addTo(resultMap);
 
     // Fit bounds to show both markers
-    const bounds = new google.maps.LatLngBounds();
-    bounds.extend(gameState.currentLocation);
-    bounds.extend(gameState.guessLocation);
-    resultMap.fitBounds(bounds);
+    const bounds = L.latLngBounds(
+        [gameState.currentLocation.lat, gameState.currentLocation.lng],
+        [gameState.guessLocation.lat, gameState.guessLocation.lng]
+    );
+    resultMap.fitBounds(bounds, { padding: [50, 50] });
 
     updateUI();
     document.getElementById('result-modal').classList.remove('hidden');
@@ -353,6 +380,3 @@ function updateUI() {
     document.getElementById('round').textContent = gameState.round;
     document.getElementById('score').textContent = gameState.score.toLocaleString();
 }
-
-// Make initGame available globally
-window.initGame = initGame;

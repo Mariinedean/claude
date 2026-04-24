@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Free GeoGuesser - Play Without Paying!</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -25,8 +26,13 @@
 
         <!-- Game Container -->
         <div id="game-container">
-            <!-- Street View Panorama -->
-            <div id="panorama"></div>
+            <!-- Explore View (Satellite Map) -->
+            <div id="explore-view"></div>
+
+            <!-- Location Hint -->
+            <div id="location-hint" class="hint-box">
+                <strong>Hint:</strong> <span id="hint-text">Explore the map to find clues!</span>
+            </div>
 
             <!-- Guess Map Overlay -->
             <div id="map-overlay" class="hidden">
@@ -74,12 +80,14 @@
             <div class="modal-content">
                 <h1>Welcome to Free GeoGuesser!</h1>
                 <p>Explore the world without paying a cent!</p>
+                <p class="subtitle">100% Free - No API Keys - No Sign Up!</p>
                 <div class="instructions">
                     <h3>How to Play:</h3>
                     <ul>
-                        <li>Explore the Street View location</li>
+                        <li>Explore the satellite map view of a random location</li>
+                        <li>Look for landmarks, geography, and city features</li>
                         <li>Click "Make Your Guess" when ready</li>
-                        <li>Click on the map where you think you are</li>
+                        <li>Click on the world map where you think you are</li>
                         <li>Earn points based on accuracy!</li>
                     </ul>
                 </div>
@@ -88,9 +96,7 @@
         </div>
     </div>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="game.js"></script>
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE&callback=initGame">
-    </script>
 </body>
 </html>
